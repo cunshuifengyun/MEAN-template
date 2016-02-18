@@ -5,38 +5,44 @@ module.exports = function(grunt) {
             basePath: '[appName-client]'
 
         },
-        jshint: {},
-        jsmin: {
+        jshint: {
             options: {
-                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'//Ìí¼Óbanner
+                browser: true,
+                devel: true
             },
-            builda: {//ÈÎÎñÒ»£ºÑ¹Ëõa.js£¬²»»ìÏı±äÁ¿Ãû£¬±£Áô×¢ÊÍ£¬Ìí¼ÓbannerºÍfooter
+            all: ['<%= meta.basePath %>/src/js/**/*.js']
+        },
+        uglify: {
+            options: {
+                banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'//æ·»åŠ banner
+            },
+            builda: {//ä»»åŠ¡ä¸€ï¼šå‹ç¼©a.jsï¼Œä¸æ··æ·†å˜é‡åï¼Œä¿ç•™æ³¨é‡Šï¼Œæ·»åŠ bannerå’Œfooter
                 options: {
-                    mangle: false, //²»»ìÏı±äÁ¿Ãû
-                    preserveComments: 'all', //²»É¾³ı×¢ÊÍ£¬»¹¿ÉÒÔÎª false£¨É¾³ıÈ«²¿×¢ÊÍ£©£¬some£¨±£Áô@preserve @license @cc_onµÈ×¢ÊÍ£©
-                    footer:'\n/*! <%= pkg.name %> ×îºóĞŞ¸ÄÓÚ£º <%= grunt.template.today("yyyy-mm-dd") %> */'//Ìí¼Ófooter
+                    mangle: false, //ä¸æ··æ·†å˜é‡å
+                    preserveComments: false, //'all' ä¸åˆ é™¤æ³¨é‡Šï¼Œè¿˜å¯ä»¥ä¸º falseï¼ˆåˆ é™¤å…¨éƒ¨æ³¨é‡Šï¼‰ï¼Œ'some'ï¼ˆä¿ç•™@preserve @license @cc_onç­‰æ³¨é‡Šï¼‰
+                    footer:'\n/*! <%= pkg.name %> æœ€åä¿®æ”¹äºï¼š <%= grunt.template.today("yyyy-mm-dd") %> */'//æ·»åŠ footer
                 },
                 files: {
-                    'output/js/a.min.js': ['js/a.js']
+                    '<%= meta.basePath %>/dist/<%= pkg.name %>.min.js': ['<%= meta.basePath %>//src/js/<%= pkg.name %>.js']
                 }
             },
-            buildb:{//ÈÎÎñ¶ş£ºÑ¹Ëõb.js£¬Êä³öÑ¹ËõĞÅÏ¢
+            buildb:{//ä»»åŠ¡äºŒï¼šå‹ç¼©b.jsï¼Œè¾“å‡ºå‹ç¼©ä¿¡æ¯
                 options: {
-                    report: "min"//Êä³öÑ¹ËõÂÊ£¬¿ÉÑ¡µÄÖµÓĞ false(²»Êä³öĞÅÏ¢)£¬gzip
+                    report: "min"//è¾“å‡ºå‹ç¼©ç‡ï¼Œå¯é€‰çš„å€¼æœ‰ false(ä¸è¾“å‡ºä¿¡æ¯)ï¼Œgzip
                 },
                 files: {
                     'output/js/b.min.js': ['js/main/b.js']
                 }
             },
-            buildall: {//ÈÎÎñÈı£º°´Ô­ÎÄ¼ş½á¹¹Ñ¹ËõjsÎÄ¼ş¼ĞÄÚËùÓĞJSÎÄ¼ş
+            buildall: {//ä»»åŠ¡ä¸‰ï¼šæŒ‰åŸæ–‡ä»¶ç»“æ„å‹ç¼©jsæ–‡ä»¶å¤¹å†…æ‰€æœ‰JSæ–‡ä»¶
                 files: [{
                     expand:true,
-                    cwd:'js',//jsÄ¿Â¼ÏÂ
-                    src:'**/*.js',//ËùÓĞjsÎÄ¼ş
-                    dest: 'output/js'//Êä³öµ½´ËÄ¿Â¼ÏÂ
+                    cwd:'js',//jsç›®å½•ä¸‹
+                    src:'**/*.js',//æ‰€æœ‰jsæ–‡ä»¶
+                    dest: 'output/js'//è¾“å‡ºåˆ°æ­¤ç›®å½•ä¸‹
                 }]
             },
-            release: {//ÈÎÎñËÄ£ººÏ²¢Ñ¹Ëõa.jsºÍb.js
+            release: {//ä»»åŠ¡å››ï¼šåˆå¹¶å‹ç¼©a.jså’Œb.js
                 files: {
                     'output/js/index.min.js': ['js/a.js', 'js/main/b.js']
                 }
@@ -45,22 +51,36 @@ module.exports = function(grunt) {
         cssmin: {
             target: {
                 files: {
-                    '<%= meta.basePath %>/dist/<%= pkg.name %>.min.css':'<%= meta.basePath %>/sass/<%= pkg.name %>.css'
+                    '<%= meta.basePath %>/dist/<%= pkg.name %>.min.css':'<%= meta.basePath %>/src/css/<%= pkg.name %>.css'
                 }
             }
         },
-        htmlmin: {}, 
+        htmlmin: {
+            dist: {
+                options: {
+                    removeComments: true,
+                    collapseWhitespace: true
+                },
+                files: {
+                    '<%= meta.basePath %>/dist/index.html': '<%= meta.basePath %>/src/index.html',
+                    '<%= meta.basePath %>/dist/login.html': '<%= meta.basePath %>/src/login.html',
+                }
+            }
+        },
         concat: {
             sass: {
-                src: ['<%= meta.basePath %>/sass/*.scss'],
-                dest: '<%= meta.basePath %>/sass/<%= pkg.name %>.scss'
+                src: ['<%= meta.basePath %>/src/sass/*.scss'],
+                dest: '<%= meta.basePath %>/src/sass/<%= pkg.name %>.scss'
+            },
+            js: {
+                src: ['<%= meta.basePath %>/src/js/*.js'],
+                dest: '<%= meta.basePath %>/src/js/<%= pkg.name %>.js'
             }
         },
         sass: {
             dist: {
                 files: {
-                    '<%= meta.basePath %>/sass/<%= pkg.name %>.css': '<%= meta.basePath %>/sass/<%= pkg.name %>.scss'
-
+                    '<%= meta.basePath %>/src/css/<%= pkg.name %>.css': '<%= meta.basePath %>/src/sass/<%= pkg.name %>.scss'
                 }
             }
         }
@@ -71,6 +91,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-htmlmin');
 
-    grunt.registerTask('default', ['jshint', 'concat', 'jsmin:release']);
+    grunt.registerTask('default', ['jshint', 'concat', 'sass', 'cssmin', 'uglify:builda', 'htmlmin']);
 };
