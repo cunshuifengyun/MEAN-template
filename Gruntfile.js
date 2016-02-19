@@ -2,7 +2,8 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         meta: {
-            basePath: '[appName-client]'
+            template: '[appName]',
+            basePath: '[appName]-client'
 
         },
         jshint: {
@@ -83,6 +84,18 @@ module.exports = function(grunt) {
                     '<%= meta.basePath %>/src/css/<%= pkg.name %>.css': '<%= meta.basePath %>/src/sass/<%= pkg.name %>.scss'
                 }
             }
+        },
+        replace: {
+            dist: {
+                src: ['.bowerrc', '<%= pkg.name %>Server.js', 'bower.json', '<%= pkg.name %>-server/config/log4js.json'
+                , '<%= pkg.name %>-server/config/express.js'],
+                overwrite: true,
+                replacements:[{
+                    from: '<%= meta.template %>',
+                    to: '<%= pkg.name %>'
+
+                }]
+            }
         }
 
     });
@@ -92,6 +105,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
+    grunt.loadNpmTasks('grunt-text-replace');
 
     grunt.registerTask('default', ['jshint', 'concat', 'sass', 'cssmin', 'uglify:builda', 'htmlmin']);
+    grunt.registerTask('initApp', ['replace']);
 };

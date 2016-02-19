@@ -40,7 +40,7 @@ module.exports = function() {
 
     //load routes
 
-    app.use(express.static('./[appName]-client/src'));
+    app.use(express.static('./[appName]-client/dist'));
 
     return app;
 };
